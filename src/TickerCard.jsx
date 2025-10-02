@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react'
 
 const TickerCard = ({ ticker }) => {
-const [stockData, setStockData] = useState(null)
 // stockData 상태 변수를 추가, 초기값은 null
+const [stockData, setStockData] = useState(null)
+// error 상태 변수를 추가, 초기값은 null
 const [error, setError] = useState(null)
-//  error 상태 변수를 추가, 초기값은 null
+// loading 상태 변수를 추가, 초기값은 true
+const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchStockData = async () => {
@@ -25,15 +27,27 @@ const [error, setError] = useState(null)
         console.error("데이터를 가져오는 데 실패했습니다:", err)
         setError(`${ticker} 데이터를 가져오는 데 실패했습니다.`)
         // 에러 상태 업데이트
-
+      }  finally {
+        // 로딩 상태를 false로 설정
+        setLoading(false);
       }
     }
-
     fetchStockData()
   }, [ticker])
 
+  // loading 상태가 true이면 로딩 스켈레톤 UI 표시하고 함수 종료
+  if (loading) {
+    return (
+      <div className="bg-white rounded-lg shadow-lg p-6 w-80 mx-auto animate-pulse">
+        <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
+        <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+        <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+      </div>
+    )
+  }
+
   // error 상태가 있으면 에러 메시지 표시하고 함수 종료
-    if (error) {
+  if (error) {
     return (
       <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative w-80 mx-auto">
         <strong className="font-bold">에러!</strong>
