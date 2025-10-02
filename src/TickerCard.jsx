@@ -74,6 +74,9 @@ const [loading, setLoading] = useState(true)
   const priceChange = currentPrice - previousClose
   const isPositive = priceChange >= 0
 
+  const isKoreanStock = ticker.endsWith('.KS') || ticker.endsWith('.KQ')
+  const currencyMarker = isKoreanStock ? '₩' : '$'
+
   return (
     <div className="bg-white rounded-lg shadow-xl p-6 w-80
     transform transition duration-500 hover:scale-105">
@@ -107,7 +110,7 @@ const [loading, setLoading] = useState(true)
         글자 색상을 초록색 또는 빨간색으로 설정 */}
         {/* templat literal이란? 백틱(`)으로 감싸서 문자열 안에 변수나 표현식을 삽입할 수 있는 방법
         파이썬의 f-string과 비슷 */}
-        ${currentPrice.toFixed(2)}
+        {currencyMarker}{currentPrice.toFixed(2)}
       </div>
 
       <div className={`text-base font-semibold
@@ -117,9 +120,8 @@ const [loading, setLoading] = useState(true)
         글자 색상을 초록색 또는 빨간색으로 설정 */}
         {isPositive ? '▲' : '▼'} {priceChange.toFixed(2)}
       </div>
-      
       <div className="mt-4 text-sm text-gray-500">
-        전일 종가: ${previousClose.toFixed(2)}
+        전일 종가: {currencyMarker}{previousClose.toFixed(2)}
       </div>
     </div>
   )
