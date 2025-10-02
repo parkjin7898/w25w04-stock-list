@@ -1,6 +1,62 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 
-const TickerCard = ({ ticker, name, currentPrice, previousClose }) => {
+const TickerCard = ({ ticker }) => {
+const [stockData, setStockData] = useState(null)
+// stockData 상태 변수를 추가, 초기값은 null
+const [error, setError] = useState(null)
+//  error 상태 변수를 추가, 초기값은 null
+
+  useEffect(() => {
+    const fetchStockData = async () => {
+      try {
+        const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(
+                    `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`)}`
+        const response = await fetch(url)
+        
+        if (!response.ok) {
+          throw new Error('네트워크 응답이 정상적이지 않습니다.')
+        }
+
+        const data = await response.json()
+        // console.log(data.chart.result[0])
+        setStockData(data.chart.result[0])
+
+      } catch (err) {
+        console.error("데이터를 가져오는 데 실패했습니다:", err)
+        setError(`${ticker} 데이터를 가져오는 데 실패했습니다.`)
+        // 에러 상태 업데이트
+
+      }
+    }
+
+    fetchStockData()
+  }, [ticker])
+
+  // error 상태가 있으면 에러 메시지 표시하고 함수 종료
+    if (error) {
+    return (
+      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative w-80 mx-auto">
+        <strong className="font-bold">에러!</strong>
+        <div className="block sm:inline ml-2">{error}</div>
+      </div>
+    )
+  }
+
+  // stockData가 null이거나, stockData.meta가 없으면
+  // 경고 메시지 표시하고 함수 종료
+  if (!stockData || !stockData.meta) {
+    return (
+      <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative w-80 mx-auto">
+          <strong className="font-bold">경고!</strong>
+          <div className="block sm:inline ml-2">주식 데이터가 없습니다.</div>
+      </div>
+    )
+  }
+
+  const meta = stockData.meta
+  const name = meta.longName
+  const currentPrice = meta.regularMarketPrice
+  const previousClose = meta.chartPreviousClose
   const priceChange = currentPrice - previousClose
   const isPositive = priceChange >= 0
 
