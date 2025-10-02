@@ -110,7 +110,7 @@ const [loading, setLoading] = useState(true)
         글자 색상을 초록색 또는 빨간색으로 설정 */}
         {/* templat literal이란? 백틱(`)으로 감싸서 문자열 안에 변수나 표현식을 삽입할 수 있는 방법
         파이썬의 f-string과 비슷 */}
-        {currencyMarker}{currentPrice.toFixed(2)}
+        {currencyMarker}{isKoreanStock? currentPrice.toLocaleString() : currentPrice.toFixed(2)}
       </div>
 
       <div className={`text-base font-semibold
@@ -118,10 +118,10 @@ const [loading, setLoading] = useState(true)
         {/* template literal (백틱) 사용
         3항연산자를 써서 isPositive에 따라
         글자 색상을 초록색 또는 빨간색으로 설정 */}
-        {isPositive ? '▲' : '▼'} {priceChange.toFixed(2)}
+        {isPositive ? '▲' : '▼'} {isKoreanStock? priceChange.toLocaleString() : priceChange.toFixed(2)}
       </div>
       <div className="mt-4 text-sm text-gray-500">
-        전일 종가: {currencyMarker}{previousClose.toFixed(2)}
+        전일 종가: {currencyMarker}{isKoreanStock? previousClose.toLocaleString() : previousClose.toFixed(2)}
       </div>
     </div>
   )
